@@ -1,11 +1,25 @@
 package com.nicaradio.config;
 
 
-import jakarta.ws.rs.ApplicationPath;
-import jakarta.ws.rs.core.Application;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@SpringBootApplication
+public class AppConfig extends SpringBootServletInitializer {
 
-@ApplicationPath("/api")
-public class AppConfig extends Application {
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+        return builder.sources(AppConfig.class);
+    }
+
+    public static void main(String[] args) {
+        builder().run(args);
+    }
+
+    public static SpringApplicationBuilder builder() {
+        return new SpringApplicationBuilder(AppConfig.class);
+    }
 }
+
 
