@@ -2,29 +2,36 @@ package com.nicaradio.service;
 
 
 import com.nicaradio.model.Usuario;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-
+import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
-public class UsuarioService {
+@Service
+public class UsuarioService implements BaseService<Usuario> {
 
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("RadioNicaPU");
+    private final UsuarioRepository usuarioRepository;
 
-    public void crearUsuario(Usuario usuario) {
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        em.persist(usuario);
-        em.getTransaction().commit();
-        em.close();
+    public UsuarioService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
     }
 
-    public List<Usuario> obtenerUsuarios() {
-        EntityManager em = emf.createEntityManager();
-        List<Usuario> usuarios = em.createQuery("SELECT u FROM Usuario u", Usuario.class).getResultList();
-        em.close();
-        return usuarios;
+    @Override
+    public List<Usuario> listarTodos() {
+        return usuarioRepository.findAll();
+    }
+
+    @Override
+    public Optional<Usuario> buscarPorId(Long id) {
+        return usuarioRepository.findById(id);
+    }
+
+    @Override
+    public Usuario guardar(Usuario usuario) {
+        return usuarioRepository.save(usuario);
+    }
+
+    @Override
+    public void eliminar(Long id) {
+        usuarioRepository.deleteById(id);
     }
 }
-
