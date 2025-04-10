@@ -2,6 +2,7 @@ package com.nicaradio.service;
 
 
 import com.nicaradio.model.Cantante;
+import com.nicaradio.repository.CantanteRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;

@@ -3,26 +3,55 @@ package com.nicaradio.controller;
 
 import com.nicaradio.model.Usuario;
 import com.nicaradio.service.UsuarioService;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
-@Path("/usuarios")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(jakarta.ws.rs.core.MediaType.APPLICATION_JSON)
+@RestController
+@RequestMapping("/usuarios")
 public class UsuarioController {
 
-    private UsuarioService usuarioService = new UsuarioService();
+    private final UsuarioService usuarioService;
 
-    @POST
-    public void crearUsuario(Usuario usuario) {
-        usuarioService.crearUsuario(usuario);
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
     }
 
-    @GET
-    public List<Usuario> obtenerUsuarios() {
-        return usuarioService.obtenerUsuarios();
+    @GetMapping
+    public List<Usuario> listarUsuarios() {
+        return usuarioService.listarTodos();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Usuario> buscarUsuario(@PathVariable Long id) {
+        Optional<Usuario> usuario = usuarioService.buscarPorId(id);
+        return usuario.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public Usuario crearUsuario(@RequestBody Usuario usuario) {
+        return usuarioService.guardar(usuario);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Usuario> actualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuario) {
+        if (!usuarioService.buscarPorId(id).isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        usuario.setId(id);
+        return ResponseEntity.ok(usuarioService.guardar(usuario));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
+        if (!usuarioService.buscarPorId(id).isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        usuarioService.eliminar(id);
+        return ResponseEntity.noContent().build();
     }
 }
+
 
