@@ -1,12 +1,11 @@
 package com.nicaradio.config;
 
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.core.Application;
 
-@SpringBootApplication
-public class AppConfig {
-    public static void main(String[] args) {
-        SpringApplication.run(AppConfig.class, args);
-    }
+
+@ApplicationPath("/api")
+public class AppConfig extends Application {
 }
+
